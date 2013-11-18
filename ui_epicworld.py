@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'epicworld.ui'
 #
-# Created: Sun Nov 17 13:26:29 2013
+# Created: Mon Nov 18 23:56:42 2013
 #      by: PyQt5 UI code generator 5.0.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -47,7 +47,7 @@ class Ui_MainWindow(object):
         self.dockWidgetContents_3.setObjectName("dockWidgetContents_3")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.dockWidgetContents_3)
         self.verticalLayout.setObjectName("verticalLayout")
-        self.bodyList = QtWidgets.QListWidget(self.dockWidgetContents_3)
+        self.bodyList = QtWidgets.QListView(self.dockWidgetContents_3)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Ignored, QtWidgets.QSizePolicy.Ignored)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)

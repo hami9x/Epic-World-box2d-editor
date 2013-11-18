@@ -1,8 +1,10 @@
-from PyQt5.QtCore import pyqtSlot
-from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow, QGraphicsScene
+from PyQt5.QtCore import pyqtSlot, Qt
+from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow
+from PyQt5.QtGui import QPainter
 
 from ui_epicworld import Ui_MainWindow
-from manager import Manager
+from manager import MainManager, BodyListManager
+from subclasses import MainAreaGraphicsScene
 
 
 class MainWindow(QMainWindow):
@@ -11,15 +13,20 @@ class MainWindow(QMainWindow):
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        self.scene = QGraphicsScene(self.ui.centralwidget);
+        self.scene = MainAreaGraphicsScene(self.ui.centralwidget);
         self.ui.mainCanvas.setScene(self.scene);
-        self.manager = Manager(self.scene)
+        self.ui.mainCanvas.setAcceptDrops(True);
+        self.ui.mainCanvas.setRenderHint(QPainter.Antialiasing);
+        self.ui.mainCanvas.setSceneRect(0, 0, 1000, 500)
+        self.mainManager = MainManager(self.scene)
+        self.listManager = BodyListManager(self.ui.bodyList)
         self.connections();
         self.ui.mainCanvas.show();
 
-
     def connections(self):
-    	self.ui.actionImport_Bodies.triggered.connect(self.manager.loadBodies)
+        self.ui.actionImport_Bodies.triggered.connect(self.mainManager.loadBodies);
+        self.mainManager.bodiesLoaded.connect(self.listManager.updateList);
+        self.scene.receivedBodyDrop.connect(self.mainManager.cloneBody);
 
 if __name__ == '__main__':
     import sys

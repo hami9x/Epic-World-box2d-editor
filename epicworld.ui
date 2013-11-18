@@ -74,7 +74,7 @@
    <widget class="QWidget" name="dockWidgetContents_3">
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QListWidget" name="bodyList">
+      <widget class="QListView" name="bodyList">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
          <horstretch>0</horstretch>
