@@ -1,7 +1,8 @@
 Epic World editor
 ================
-A Box2D world editor that is as simple and stupid as possible.  
-Merely a world editor, just enough is enough, we don't need the feature to edit bodies. This tool is designed to be used in conjuction with [Physics Body Editor](http://code.google.com/p/box2d-editor/)!
+A minimalist Box2D world editor that just wants to provide enough functionalities.  
+We don't need to reinvent the feature to edit bodies, this tool is designed to be used in conjuction with [Physics Body Editor](http://code.google.com/p/box2d-editor/)!  
+  
 Early stage, in heavy development, and needs your help.
 
 Licese  
