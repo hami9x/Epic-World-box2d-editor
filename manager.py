@@ -3,7 +3,7 @@ import math
 import os
 from PyQt5.QtWidgets import QFileDialog, QGraphicsRectItem, QGraphicsPolygonItem, QGraphicsEllipseItem, \
 QGraphicsLineItem, QGraphicsPixmapItem, QGraphicsItemGroup, QGraphicsItem, QAbstractItemView
-from PyQt5.QtGui import QPen, QVector2D, QPolygonF, QBrush, QPixmap
+from PyQt5.QtGui import QPen, QVector2D, QPolygonF, QBrush, QPixmap, QColor
 from PyQt5.QtCore import Qt, QPointF, QRectF, pyqtSignal, QObject
 from subclasses import BodyListModel
 
@@ -11,9 +11,11 @@ class BodyItem(QGraphicsRectItem):
 	def __init__(self, margin):
 		super(BodyItem, self).__init__(0, 0, 0, 0);
 		self.margin = margin;
-		pen = QPen(Qt.DashLine);
+		pen = QPen(Qt.SolidLine);
+		pen.setColor(QColor(230, 230, 230))
 		pen.setWidth(0);
 		self.setPen(pen);
+		self.setFlags(QGraphicsItem.ItemIsSelectable | QGraphicsItem.ItemIsMovable);
 
 	def updateBorder(self):
 		margin = self.margin / self.scale();
@@ -64,7 +66,6 @@ class MainManager(QObject):
 		self.bodies[bodyDef["name"]] = bodyConf;
 
 	def cloneBody(self, name, dropPos):
-		print("yay!");
 		bodyDef = self.bodies[name];
 		body = BodyItem(2);
 		body.setPos(dropPos);

@@ -1,5 +1,5 @@
 from PyQt5.QtCore import pyqtSlot, Qt
-from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow
+from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow, QGraphicsView
 from PyQt5.QtGui import QPainter
 
 from ui_epicworld import Ui_MainWindow
@@ -15,6 +15,7 @@ class MainWindow(QMainWindow):
         self.ui.setupUi(self)
         self.scene = MainAreaGraphicsScene(self.ui.centralwidget);
         self.ui.mainCanvas.setScene(self.scene);
+        self.ui.mainCanvas.setDragMode(QGraphicsView.RubberBandDrag);
         self.ui.mainCanvas.setAcceptDrops(True);
         self.ui.mainCanvas.setRenderHint(QPainter.Antialiasing);
         self.ui.mainCanvas.setSceneRect(0, 0, 1000, 500)

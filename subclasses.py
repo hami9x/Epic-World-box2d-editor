@@ -18,6 +18,15 @@ class MainAreaGraphicsScene(QGraphicsScene):
         #print(event.mimeData().text());
         self.receivedBodyDrop.emit(event.mimeData().text(), event.scenePos());
 
+    def mousePressEvent(self, mouseEvent):
+        super(MainAreaGraphicsScene, self).mousePressEvent(mouseEvent)
+
+    def mouseMoveEvent(self, mouseEvent):
+        super(MainAreaGraphicsScene, self).mouseMoveEvent(mouseEvent)
+
+    def mouseReleaseEvent(self, mouseEvent): 
+        super(MainAreaGraphicsScene, self).mouseReleaseEvent(mouseEvent)
+
 class BodyListModel(QStringListModel):
     def mimeData(self, indexes):
         if len(indexes) > 1:
