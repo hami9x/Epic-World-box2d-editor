@@ -81,11 +81,9 @@ class MainManager(QObject):
 		renderScene.addItem(grid);
 		#print(rect.x(), rect.y(), rect.width(), rect.height())
 
-	def loadBodies(self):
-		# file = QFileDialog.getOpenFileName();
-		file = ('/home/phaikawl/Dev/Epic World/pobjects.json', 0);
-		with open(file[0], "r") as f:
-			baseDir = os.path.dirname(file[0]);
+	def loadFromPBE(self, PBEFile):
+		with open(PBEFile, "r") as f:
+			baseDir = os.path.dirname(PBEFile);
 			data = json.load(f);
 			for body in data["rigidBodies"]:
 				self.loadBody(body, baseDir);
@@ -102,6 +100,7 @@ class MainManager(QObject):
 		else:
 			bodyConf["image"] = None;
 		bodyConf["shapes"] = [];
+
 		for shape in bodyDef["shapes"]:
 			bodyConf["shapes"].append(	{
 									"type": shape["type"],
@@ -109,13 +108,15 @@ class MainManager(QObject):
 								}
 							);
 		self.bodies[bodyDef["name"]] = bodyConf;
-		self.nameIndex[bodyDef["name"]] = 0;
 
-	def cloneBody(self, bodyspecName, dropPos):
+	def cloneBody(self, bodyspecName, dropPos, itemId=None):
 		bodyDef = self.bodies[bodyspecName];
-		self.nameIndex[bodyspecName] += 1;
-		defaultId = "{}{}".format(bodyspecName, self.nameIndex[bodyspecName]);
-		body = BodyItem(defaultId, bodyspecName, 2);
+		if not itemId:
+			if bodyspecName not in self.nameIndex:
+				self.nameIndex[bodyspecName] = 0;
+			self.nameIndex[bodyspecName] += 1;
+			itemId = "{}{}".format(bodyspecName, self.nameIndex[bodyspecName]);
+		body = BodyItem(itemId, bodyspecName, 2);
 		self.bodyInstances.append(body);
 		body.setPos(dropPos);
 		group = QGraphicsItemGroup(body);
@@ -146,7 +147,6 @@ class MainManager(QObject):
 		body.updateBorder();
 
 	def save(self, file):
-		print(file);
 		with open(file, "w") as f:
 			instancesDef = [];
 			for inst in self.bodyInstances:
@@ -155,6 +155,24 @@ class MainManager(QObject):
 					"pos": {"x": pos.x()/self.UNITS_PER_METER, "y": pos.y()/self.UNITS_PER_METER}});
 			output = {"spec": self.bodies, "instances": instancesDef};
 			json.dump(output, f, cls=MyJsonEncoder);
+
+	def loadFile(self, file):
+		with open(file, "r") as f:
+			data = json.load(f);			
+			self.bodies = data["spec"];
+			for name, body in self.bodies.items():
+				shapes = [];
+				for shape in body["shapes"]:
+					shape["vertices"]=[QPointF(vertex["x"], vertex["y"]) for vertex in shape["vertices"]];
+					shapes.append(shape);
+				body["shapes"]=shapes;
+				self.bodies[name] = body;
+
+			for inst in data["instances"]:
+				pos = inst["pos"];
+				self.cloneBody(inst["bodyspec"], QPointF(pos["x"]*self.UNITS_PER_METER, pos["y"]*self.UNITS_PER_METER), inst["id"])
+			self.bodiesLoaded.emit(self.bodies);
+			
 
 
 class BodyListManager(QObject):

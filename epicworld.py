@@ -18,6 +18,7 @@ class MainWindow(QMainWindow):
         self.ui.mainCanvas.setAcceptDrops(True);
         self.ui.mainCanvas.setRenderHint(QPainter.Antialiasing);
         self.file = None;
+        self.PBEFile= None;
         
         self.mainManager = MainManager(self.scene)
         self.listManager = BodyListManager(self.ui.bodyList)
@@ -28,7 +29,8 @@ class MainWindow(QMainWindow):
         self.ui.mainCanvas.show();
 
     def connections(self):
-        self.ui.actionImport_Bodies.triggered.connect(self.mainManager.loadBodies);
+        self.ui.actionImport_Bodies.triggered.connect(self.loadFromPBE);
+        self.ui.actionLoad.triggered.connect(self.loadFile);
         self.mainManager.bodiesLoaded.connect(self.listManager.updateList);
         self.ui.actionSave.triggered.connect(self.save);
         self.scene.receivedBodyDrop.connect(self.mainManager.cloneBody);
@@ -43,6 +45,23 @@ class MainWindow(QMainWindow):
             else:
                 return;
         self.mainManager.save(self.file);
+
+    def loadFromPBE(self):
+        if not self.PBEFile:
+            oFile = QFileDialog.getOpenFileName();
+            if not oFile[0]:
+                return
+            else:
+                self.PBEFile = oFile[0]
+        self.mainManager.loadFromPBE(self.PBEFile);
+
+    def loadFile(self):
+        oFile = QFileDialog.getOpenFileName();
+        if not oFile[0]:
+            return
+        else:
+            self.file = oFile[0]
+        self.mainManager.loadFile(self.file);
 
 if __name__ == '__main__':
     import sys
