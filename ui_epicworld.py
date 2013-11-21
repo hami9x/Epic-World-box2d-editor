@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'epicworld.ui'
 #
-# Created: Tue Nov 19 11:32:55 2013
+# Created: Thu Nov 21 07:42:49 2013
 #      by: PyQt5 UI code generator 5.0.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -12,7 +12,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(568, 416)
+        MainWindow.resize(839, 608)
         MainWindow.setFocusPolicy(QtCore.Qt.StrongFocus)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
@@ -23,7 +23,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout.addWidget(self.mainCanvas)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 568, 25))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 839, 25))
         self.menubar.setObjectName("menubar")
         self.menuFile = QtWidgets.QMenu(self.menubar)
         self.menuFile.setObjectName("menuFile")

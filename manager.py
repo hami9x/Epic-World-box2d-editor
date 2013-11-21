@@ -7,6 +7,7 @@ from PyQt5.QtGui import QPen, QVector2D, QPolygonF, QBrush, QPixmap, QColor
 from PyQt5.QtCore import Qt, QPointF, QRectF, pyqtSignal, QObject
 from subclasses import BodyListModel
 
+
 class BodyItem(QGraphicsRectItem):
 	def __init__(self, margin):
 		super(BodyItem, self).__init__(0, 0, 0, 0);
@@ -22,11 +23,29 @@ class BodyItem(QGraphicsRectItem):
 		rect = self.childrenBoundingRect()
 		self.setRect(QRectF(rect.x()-margin, rect.y()-margin, rect.width()+2*margin, rect.height()+2*margin));
 
+class GridItem(QGraphicsItemGroup):
+	def __init__(self, origX, origY, perCell, n):
+		super(GridItem, self).__init__();
+		length = perCell*n/2;
+		pen = QPen(Qt.DashLine);
+		pen.setColor(QColor(230, 230, 230))
+		pen.setWidth(0);
+		x1, y1, x2, y2 = origX-length, origY-length, origX-length, origY+length
+		for i in range(1, n):
+			line = QGraphicsLineItem(x1, y1, x2, y2, self)
+			line.setPen(pen)
+			x1, y1, x2, y2 = x1+perCell, y1, x2+perCell, y2
+		x1, y1, x2, y2 = origX-length, origY-length, origX+length, origY-length
+		for i in range(1, n):
+			line = QGraphicsLineItem(x1, y1, x2, y2, self)
+			line.setPen(pen)
+			x1, y1, x2, y2 = x1, y1+perCell, x2, y2+perCell
 
 class MainManager(QObject):
 	DEFAULT_BODY_SIZE = 50;
 	TRANSCOORD_X = 30;
 	TRANSCOORD_Y = -30;
+	AXIS_LEN = 250;
 
 	bodiesLoaded = pyqtSignal(dict);
 
@@ -35,7 +54,23 @@ class MainManager(QObject):
 		self.renderScene = renderScene;
 		self.noPen = QPen(Qt.NoPen);
 		self.bodies = {};
-	
+		self.axes = QGraphicsItemGroup();
+		renderScene.addItem(self.axes);
+		xAxis = QGraphicsItemGroup(self.axes);
+		s1, s2 = 10, 4
+		x1, y1, x2, y2 = -self.AXIS_LEN, 0, self.AXIS_LEN, 0
+		QGraphicsLineItem(x1, y1, x2, y2, xAxis);
+		QGraphicsLineItem(x2-s1, y2-s2, x2, y2, xAxis);
+		QGraphicsLineItem(x2-s1, y2+s2, x2, y2, xAxis);
+		x1, y1, x2, y2 = 0, -self.AXIS_LEN, 0, self.AXIS_LEN
+		yAxis = QGraphicsItemGroup(self.axes);
+		QGraphicsLineItem(x1, y1, x2, y2, yAxis);
+		QGraphicsLineItem(x2-s2, -(y2-s1), x2, -y2, yAxis);
+		QGraphicsLineItem(x2+s2, -(y2-s1), x2, -y2, yAxis);
+		grid = GridItem(0, 0, 30, 100);
+		renderScene.addItem(grid);
+		#print(rect.x(), rect.y(), rect.width(), rect.height())
+
 	def loadBodies(self):
 		# file = QFileDialog.getOpenFileName();
 		file = ('/home/phaikawl/Dev/Epic World/pobjects.json', 0);
@@ -95,6 +130,9 @@ class MainManager(QObject):
 		else:
 			group.setScale(self.DEFAULT_BODY_SIZE/bounding.width());
 		body.updateBorder();
+
+	def save():
+		pass
 
 
 class BodyListManager(QObject):
