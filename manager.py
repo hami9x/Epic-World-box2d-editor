@@ -109,7 +109,7 @@ class MainManager(QObject):
 							);
 		self.bodies[bodyDef["name"]] = bodyConf;
 
-	def cloneBody(self, bodyspecName, dropPos, itemId=None):
+	def cloneBody(self, bodyspecName, dropPos, itemId=None, scale=1):
 		bodyDef = self.bodies[bodyspecName];
 		if not itemId:
 			if bodyspecName not in self.nameIndex:
@@ -145,6 +145,7 @@ class MainManager(QObject):
 		else:
 			group.setScale(self.DEFAULT_BODY_SIZE/bounding.width());
 		body.updateBorder();
+		body.setScale(scale);
 
 	def save(self, file):
 		with open(file, "w") as f:
@@ -152,7 +153,9 @@ class MainManager(QObject):
 			for inst in self.bodyInstances:
 				pos = inst.scenePos();
 				instancesDef.append({"id": inst.itemId, "bodyspec": inst.bodyspecName,
-					"pos": {"x": pos.x()/self.UNITS_PER_METER, "y": pos.y()/self.UNITS_PER_METER}});
+					"pos": {"x": pos.x()/self.UNITS_PER_METER, "y": pos.y()/self.UNITS_PER_METER},
+					"scale": inst.scale()
+					});
 			output = {"spec": self.bodies, "instances": instancesDef};
 			json.dump(output, f, cls=MyJsonEncoder);
 
@@ -170,7 +173,8 @@ class MainManager(QObject):
 
 			for inst in data["instances"]:
 				pos = inst["pos"];
-				self.cloneBody(inst["bodyspec"], QPointF(pos["x"]*self.UNITS_PER_METER, pos["y"]*self.UNITS_PER_METER), inst["id"])
+				self.cloneBody(inst["bodyspec"], QPointF(pos["x"]*self.UNITS_PER_METER, pos["y"]*self.UNITS_PER_METER),
+					itemId=inst["id"], scale=inst["scale"])
 			self.bodiesLoaded.emit(self.bodies);
 			
 

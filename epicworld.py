@@ -34,6 +34,8 @@ class MainWindow(QMainWindow):
         self.mainManager.bodiesLoaded.connect(self.listManager.updateList);
         self.ui.actionSave.triggered.connect(self.save);
         self.scene.receivedBodyDrop.connect(self.mainManager.cloneBody);
+        self.ui.actionScale.toggled.connect(self.scene.scaleModeToggled);
+        self.scene.wantsToStopScaling.connect(self.ui.actionScale.toggle)
 
     def save(self):
         if not self.file:

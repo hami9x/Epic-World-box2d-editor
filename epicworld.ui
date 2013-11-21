@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>839</width>
+    <width>840</width>
     <height>608</height>
    </rect>
   </property>
@@ -28,7 +28,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>839</width>
+     <width>840</width>
      <height>25</height>
     </rect>
    </property>
@@ -45,22 +45,12 @@
      <string>Action</string>
     </property>
     <addaction name="actionDelete_Body"/>
+    <addaction name="actionScale"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuAction"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <widget class="QToolBar" name="toolBar">
-   <property name="windowTitle">
-    <string>toolBar</string>
-   </property>
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-  </widget>
   <widget class="QDockWidget" name="bodyListDock">
    <property name="sizePolicy">
     <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
@@ -86,6 +76,19 @@
     </layout>
    </widget>
   </widget>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionDelete_Body"/>
+   <addaction name="actionScale"/>
+  </widget>
   <action name="actionLoad">
    <property name="text">
     <string>Load</string>
@@ -108,8 +111,25 @@
    </property>
   </action>
   <action name="actionDelete_Body">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
    <property name="text">
-    <string>Delete Body</string>
+    <string>Delete</string>
+   </property>
+   <property name="shortcut">
+    <string>Del</string>
+   </property>
+  </action>
+  <action name="actionScale">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Scale</string>
+   </property>
+   <property name="shortcut">
+    <string>Space</string>
    </property>
   </action>
  </widget>

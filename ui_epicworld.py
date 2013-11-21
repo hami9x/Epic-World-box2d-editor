@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'epicworld.ui'
 #
-# Created: Thu Nov 21 18:51:07 2013
+# Created: Thu Nov 21 21:48:29 2013
 #      by: PyQt5 UI code generator 5.0.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -12,7 +12,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(839, 608)
+        MainWindow.resize(840, 608)
         MainWindow.setFocusPolicy(QtCore.Qt.StrongFocus)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
@@ -23,7 +23,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout.addWidget(self.mainCanvas)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 839, 25))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 840, 25))
         self.menubar.setObjectName("menubar")
         self.menuFile = QtWidgets.QMenu(self.menubar)
         self.menuFile.setObjectName("menuFile")
@@ -33,9 +33,6 @@ class Ui_MainWindow(object):
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
-        self.toolBar = QtWidgets.QToolBar(MainWindow)
-        self.toolBar.setObjectName("toolBar")
-        MainWindow.addToolBar(QtCore.Qt.TopToolBarArea, self.toolBar)
         self.bodyListDock = QtWidgets.QDockWidget(MainWindow)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
@@ -57,6 +54,9 @@ class Ui_MainWindow(object):
         self.verticalLayout.addWidget(self.bodyList)
         self.bodyListDock.setWidget(self.dockWidgetContents_3)
         MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(1), self.bodyListDock)
+        self.toolBar = QtWidgets.QToolBar(MainWindow)
+        self.toolBar.setObjectName("toolBar")
+        MainWindow.addToolBar(QtCore.Qt.TopToolBarArea, self.toolBar)
         self.actionLoad = QtWidgets.QAction(MainWindow)
         self.actionLoad.setObjectName("actionLoad")
         self.actionSave = QtWidgets.QAction(MainWindow)
@@ -65,13 +65,20 @@ class Ui_MainWindow(object):
         self.actionImport_Bodies.setCheckable(False)
         self.actionImport_Bodies.setObjectName("actionImport_Bodies")
         self.actionDelete_Body = QtWidgets.QAction(MainWindow)
+        self.actionDelete_Body.setCheckable(False)
         self.actionDelete_Body.setObjectName("actionDelete_Body")
+        self.actionScale = QtWidgets.QAction(MainWindow)
+        self.actionScale.setCheckable(True)
+        self.actionScale.setObjectName("actionScale")
         self.menuFile.addAction(self.actionLoad)
         self.menuFile.addAction(self.actionSave)
         self.menuFile.addAction(self.actionImport_Bodies)
         self.menuAction.addAction(self.actionDelete_Body)
+        self.menuAction.addAction(self.actionScale)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuAction.menuAction())
+        self.toolBar.addAction(self.actionDelete_Body)
+        self.toolBar.addAction(self.actionScale)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -86,5 +93,8 @@ class Ui_MainWindow(object):
         self.actionSave.setText(_translate("MainWindow", "Save"))
         self.actionImport_Bodies.setText(_translate("MainWindow", "Import Bodies"))
         self.actionImport_Bodies.setShortcut(_translate("MainWindow", "Ctrl+I"))
-        self.actionDelete_Body.setText(_translate("MainWindow", "Delete Body"))
+        self.actionDelete_Body.setText(_translate("MainWindow", "Delete"))
+        self.actionDelete_Body.setShortcut(_translate("MainWindow", "Del"))
+        self.actionScale.setText(_translate("MainWindow", "Scale"))
+        self.actionScale.setShortcut(_translate("MainWindow", "Space"))
 
