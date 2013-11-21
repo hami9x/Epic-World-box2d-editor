@@ -7,10 +7,11 @@ from PyQt5.QtGui import QPen, QVector2D, QPolygonF, QBrush, QPixmap, QColor
 from PyQt5.QtCore import Qt, QPointF, QRectF, pyqtSignal, QObject
 from subclasses import BodyListModel
 
-
 class BodyItem(QGraphicsRectItem):
-	def __init__(self, margin):
+	def __init__(self, itemId, bodyspecName, margin):
 		super(BodyItem, self).__init__(0, 0, 0, 0);
+		self.itemId = itemId;
+		self.bodyspecName = bodyspecName;
 		self.margin = margin;
 		pen = QPen(Qt.SolidLine);
 		pen.setColor(QColor(230, 230, 230))
@@ -41,11 +42,18 @@ class GridItem(QGraphicsItemGroup):
 			line.setPen(pen)
 			x1, y1, x2, y2 = x1, y1+perCell, x2, y2+perCell
 
+class MyJsonEncoder(json.JSONEncoder):
+	def default(self, o):
+		if isinstance(o, QPointF):
+			return {"x": o.x(), "y": o.y()}
+		return json.JSONEncoder.default(self, o)
+
 class MainManager(QObject):
 	DEFAULT_BODY_SIZE = 50;
 	TRANSCOORD_X = 30;
 	TRANSCOORD_Y = -30;
 	AXIS_LEN = 250;
+	UNITS_PER_METER = 30;
 
 	bodiesLoaded = pyqtSignal(dict);
 
@@ -54,6 +62,8 @@ class MainManager(QObject):
 		self.renderScene = renderScene;
 		self.noPen = QPen(Qt.NoPen);
 		self.bodies = {};
+		self.bodyInstances = [];
+		self.nameIndex = {};
 		self.axes = QGraphicsItemGroup();
 		renderScene.addItem(self.axes);
 		xAxis = QGraphicsItemGroup(self.axes);
@@ -67,7 +77,7 @@ class MainManager(QObject):
 		QGraphicsLineItem(x1, y1, x2, y2, yAxis);
 		QGraphicsLineItem(x2-s2, -(y2-s1), x2, -y2, yAxis);
 		QGraphicsLineItem(x2+s2, -(y2-s1), x2, -y2, yAxis);
-		grid = GridItem(0, 0, 30, 100);
+		grid = GridItem(0, 0, self.UNITS_PER_METER, 100);
 		renderScene.addItem(grid);
 		#print(rect.x(), rect.y(), rect.width(), rect.height())
 
@@ -99,10 +109,14 @@ class MainManager(QObject):
 								}
 							);
 		self.bodies[bodyDef["name"]] = bodyConf;
+		self.nameIndex[bodyDef["name"]] = 0;
 
-	def cloneBody(self, name, dropPos):
-		bodyDef = self.bodies[name];
-		body = BodyItem(2);
+	def cloneBody(self, bodyspecName, dropPos):
+		bodyDef = self.bodies[bodyspecName];
+		self.nameIndex[bodyspecName] += 1;
+		defaultId = "{}{}".format(bodyspecName, self.nameIndex[bodyspecName]);
+		body = BodyItem(defaultId, bodyspecName, 2);
+		self.bodyInstances.append(body);
 		body.setPos(dropPos);
 		group = QGraphicsItemGroup(body);
 		self.renderScene.addItem(body);
@@ -131,8 +145,16 @@ class MainManager(QObject):
 			group.setScale(self.DEFAULT_BODY_SIZE/bounding.width());
 		body.updateBorder();
 
-	def save():
-		pass
+	def save(self, file):
+		print(file);
+		with open(file, "w") as f:
+			instancesDef = [];
+			for inst in self.bodyInstances:
+				pos = inst.scenePos();
+				instancesDef.append({"id": inst.itemId, "bodyspec": inst.bodyspecName,
+					"pos": {"x": pos.x()/self.UNITS_PER_METER, "y": pos.y()/self.UNITS_PER_METER}});
+			output = {"spec": self.bodies, "instances": instancesDef};
+			json.dump(output, f, cls=MyJsonEncoder);
 
 
 class BodyListManager(QObject):

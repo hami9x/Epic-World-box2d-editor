@@ -1,5 +1,5 @@
 from PyQt5.QtCore import pyqtSlot, Qt
-from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow, QGraphicsView
+from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow, QGraphicsView, QFileDialog
 from PyQt5.QtGui import QPainter
 
 from ui_epicworld import Ui_MainWindow
@@ -17,6 +17,7 @@ class MainWindow(QMainWindow):
         self.ui.mainCanvas.setDragMode(QGraphicsView.RubberBandDrag);
         self.ui.mainCanvas.setAcceptDrops(True);
         self.ui.mainCanvas.setRenderHint(QPainter.Antialiasing);
+        self.file = None;
         
         self.mainManager = MainManager(self.scene)
         self.listManager = BodyListManager(self.ui.bodyList)
@@ -29,8 +30,19 @@ class MainWindow(QMainWindow):
     def connections(self):
         self.ui.actionImport_Bodies.triggered.connect(self.mainManager.loadBodies);
         self.mainManager.bodiesLoaded.connect(self.listManager.updateList);
-        self.ui.actionSave.triggered.connect(self.mainManager.save);
+        self.ui.actionSave.triggered.connect(self.save);
         self.scene.receivedBodyDrop.connect(self.mainManager.cloneBody);
+
+    def save(self):
+        if not self.file:
+            dialog = QFileDialog();
+            #dialog.setFileMode(QFileDialog.AnyFile);
+            dialog.setAcceptMode(QFileDialog.AcceptSave);
+            if (dialog.exec()):
+                self.file = (dialog.selectedFiles())[0];
+            else:
+                return;
+        self.mainManager.save(self.file);
 
 if __name__ == '__main__':
     import sys
