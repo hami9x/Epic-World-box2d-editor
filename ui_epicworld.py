@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'epicworld.ui'
 #
-# Created: Fri Nov 22 08:15:49 2013
+# Created: Fri Nov 22 08:25:39 2013
 #      by: PyQt5 UI code generator 5.0.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -74,8 +74,11 @@ class Ui_MainWindow(object):
         self.actionUndo.setObjectName("actionUndo")
         self.actionRedo = QtWidgets.QAction(MainWindow)
         self.actionRedo.setObjectName("actionRedo")
+        self.actionSave_as = QtWidgets.QAction(MainWindow)
+        self.actionSave_as.setObjectName("actionSave_as")
         self.menuFile.addAction(self.actionLoad)
         self.menuFile.addAction(self.actionSave)
+        self.menuFile.addAction(self.actionSave_as)
         self.menuFile.addAction(self.actionImport_Bodies)
         self.menuAction.addAction(self.actionDelete_Body)
         self.menuAction.addAction(self.actionScale)
@@ -110,4 +113,6 @@ class Ui_MainWindow(object):
         self.actionUndo.setShortcut(_translate("MainWindow", "Ctrl+Z"))
         self.actionRedo.setText(_translate("MainWindow", "Redo"))
         self.actionRedo.setShortcut(_translate("MainWindow", "Ctrl+Y"))
+        self.actionSave_as.setText(_translate("MainWindow", "Save as..."))
+        self.actionSave_as.setShortcut(_translate("MainWindow", "Ctrl+Shift+S"))
 

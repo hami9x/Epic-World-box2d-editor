@@ -41,9 +41,21 @@ class MainWindow(QMainWindow):
         self.scene.mouseIsMovingItems.connect(self.mainManager.handleMoveCommand);
         self.scene.scalingStopped.connect(self.mainManager.handleScaleCommand);
         self.scene.mouseClickEndedScaling.connect(self.turnOffScale);
+        self.ui.actionSave_as.triggered.connect(self.saveAs);
 
     def turnOffScale(self):
         self.ui.actionScale.setChecked(False);
+
+    def saveAs(self):
+        if not self.file:
+            self.save();
+        else:
+            dialog = QFileDialog();
+            #dialog.setFileMode(QFileDialog.AnyFile);
+            dialog.setAcceptMode(QFileDialog.AcceptSave);
+            if (dialog.exec()):
+                self.file = (dialog.selectedFiles())[0];
+                self.mainManager.save(self.file);
 
     def save(self):
         if not self.file:

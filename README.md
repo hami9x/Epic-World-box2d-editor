@@ -3,7 +3,7 @@ Epic World editor
 A minimalist Box2D world editor that just wants to provide enough functionalities.  
 We don't need to reinvent the feature to edit bodies, this tool is designed to be used in conjuction with [Physics Body Editor](http://code.google.com/p/box2d-editor/)!  
   
-Early stage, in heavy development, and needs your help.
+Essential functionalities completed, including import/export, moving, scaling, undo/redo. It's now ready to be used!
 
 Licese  
 -------
