@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'epicworld.ui'
 #
-# Created: Fri Nov 22 08:54:36 2013
+# Created: Fri Nov 22 09:47:37 2013
 #      by: PyQt5 UI code generator 5.0.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -103,7 +103,7 @@ class Ui_MainWindow(object):
         self.actionLoad.setText(_translate("MainWindow", "Load"))
         self.actionSave.setText(_translate("MainWindow", "Save"))
         self.actionSave.setShortcut(_translate("MainWindow", "Ctrl+S"))
-        self.actionImport_Bodies.setText(_translate("MainWindow", "Import Bodies"))
+        self.actionImport_Bodies.setText(_translate("MainWindow", "Import bodies From Physics Body Editor"))
         self.actionImport_Bodies.setShortcut(_translate("MainWindow", "Ctrl+I"))
         self.actionDelete_Body.setText(_translate("MainWindow", "Delete"))
         self.actionDelete_Body.setShortcut(_translate("MainWindow", "Del"))

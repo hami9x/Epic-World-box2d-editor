@@ -112,7 +112,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Import Bodies</string>
+    <string>Import bodies From Physics Body Editor</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+I</string>
