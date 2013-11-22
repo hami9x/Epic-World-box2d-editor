@@ -14,6 +14,7 @@ class MainAreaGraphicsScene(QGraphicsScene):
     scalingStopped = pyqtSignal(float);
     mouseClickEndedScaling = pyqtSignal(bool);
     mouseIsMovingItems = pyqtSignal(QPointF, QPointF)
+    itemChanging = pyqtSignal(bool);
 
     def __init__(self, parent, view):
         super(MainAreaGraphicsScene, self).__init__(parent);
@@ -47,6 +48,8 @@ class MainAreaGraphicsScene(QGraphicsScene):
         self.receivedBodyDrop.emit(event.mimeData().text(), event.scenePos());
 
     def mousePressEvent(self, mouseEvent):
+        if self.onlyOneItemSelected():
+                self.itemChanging.emit(True);
         if self.state == SCALING:
             mouseEvent.accept();
             return;
@@ -74,7 +77,6 @@ class MainAreaGraphicsScene(QGraphicsScene):
         if self.state == SCALING:
             # self.scalingStopped.emit(self.scaleDelta);
             self.mouseClickEndedScaling.emit(False);
-            return
         if self.state == NORMAL:
             pos = mouseEvent.scenePos();
             item = self.itemAt(pos, QTransform());
@@ -83,12 +85,17 @@ class MainAreaGraphicsScene(QGraphicsScene):
                 if (oPos.x()!=pos.x() or oPos.y()!=pos.y()):
                     self.mouseIsMovingItems.emit(self.origMousePos, pos)
                 super(MainAreaGraphicsScene, self).mouseReleaseEvent(mouseEvent)
+        if self.onlyOneItemSelected():
+            self.itemChanging.emit(False);
 
     def wheelEvent(self, event):
         event.accept();
         sx = 1 + event.delta()/(180*8);
         self.view.centerOn(event.scenePos());
         self.view.scale(sx, sx);
+
+    def onlyOneItemSelected(self):
+        return (len(self.selectedItems()) == 1);
 
 class BodyListModel(QStringListModel):
     def mimeData(self, indexes):
@@ -125,6 +132,7 @@ class ScaleCommand(QUndoCommand):
     def undo(self):
         for item in self.items:
             item.setScale(item.scale()/self.scaleDelta)
+
     def redo(self):
         for item in self.items:
             item.setScale(item.scale()*self.scaleDelta)

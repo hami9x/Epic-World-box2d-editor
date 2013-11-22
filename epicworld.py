@@ -1,4 +1,4 @@
-from PyQt5.QtCore import pyqtSlot, Qt
+from PyQt5.QtCore import pyqtSlot, Qt, QTimer
 from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow, QGraphicsView, QFileDialog
 from PyQt5.QtGui import QPainter
 
@@ -19,6 +19,8 @@ class MainWindow(QMainWindow):
         self.ui.mainCanvas.setRenderHint(QPainter.Antialiasing);
         self.file = None;
         self.PBEFile= None;
+        self.updateTimer = QTimer();
+        self.updateTimer.setInterval(100);
         
         self.mainManager = MainManager(self.scene)
         self.listManager = BodyListManager(self.ui.bodyList)
@@ -42,6 +44,65 @@ class MainWindow(QMainWindow):
         self.scene.scalingStopped.connect(self.mainManager.handleScaleCommand);
         self.scene.mouseClickEndedScaling.connect(self.turnOffScale);
         self.ui.actionSave_as.triggered.connect(self.saveAs);
+        self.scene.itemChanging.connect(self.startStopUpdatingProperties);
+        self.scene.selectionChanged.connect(self.enableDisableProperties);
+        self.updateTimer.timeout.connect(self.updateItemProperties);
+        self.ui.xEdit.textEdited.connect(self.itemUpdateX);
+        self.ui.yEdit.textEdited.connect(self.itemUpdateY);
+        self.ui.scaleEdit.textEdited.connect(self.itemUpdateScale);
+        self.ui.idEdit.textEdited.connect(self.itemUpdateId);
+
+    def theOnlySelectedItem(self):
+        if not self.scene.onlyOneItemSelected():
+             return None;
+        return self.scene.selectedItems()[0];
+
+    def itemUpdateX(self, newVal):
+        item = self.theOnlySelectedItem();
+        if not item: return;
+        x = int(newVal);
+        item.setPos(QPointF(x, item.pos().y()))
+
+    def itemUpdateY(self, newVal):
+        item = self.theOnlySelectedItem();
+        if not item: return;
+        y = int(newVal);
+        item.setPos(QPointF(item.pos().x(), y))
+
+    def itemUpdateScale(self, newVal):
+        item = self.theOnlySelectedItem();
+        if not item: return;
+        scale = int(newVal);
+        item.setScale(scale);
+
+    def itemUpdateId(self, newId):
+        item = self.theOnlySelectedItem();
+        if not item: return;
+        item.setId(newId)
+
+    def updateItemProperties(self):
+        item = self.theOnlySelectedItem();
+        if not item: return;
+        self.ui.xEdit.setText(str(item.pos().x()));
+        self.ui.yEdit.setText(str(item.pos().y()));
+        self.ui.scaleEdit.setText(str(item.scale()));
+        self.ui.idEdit.setText(item.itemId);
+
+    def enableDisableProperties(self):
+        if self.scene.onlyOneItemSelected():
+            self.ui.propertiesDock.setEnabled(True);
+            self.updateItemProperties();
+            return;
+        self.ui.propertiesDock.setEnabled(False);
+
+    def startStopUpdatingProperties(self, changing):
+        if (not changing) or (not self.scene.onlyOneItemSelected()):
+            self.updateTimer.stop();
+            return;
+        if changing:
+            self.updateItemProperties();
+            self.updateTimer.start();
+
 
     def turnOffScale(self):
         self.ui.actionScale.setChecked(False);

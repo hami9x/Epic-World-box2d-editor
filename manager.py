@@ -29,6 +29,9 @@ class BodyItem(QGraphicsRectItem):
 		self.setVisible(not deleted);
 		self.deleted = deleted;
 
+	def setId(self, itemId):
+		self.itemId = itemId;
+
 class GridItem(QGraphicsItemGroup):
 	def __init__(self, origX, origY, perCell, n):
 		super(GridItem, self).__init__();
@@ -61,6 +64,8 @@ class MainManager(QObject):
 	UNITS_PER_METER = 30;
 
 	bodiesLoaded = pyqtSignal(dict);
+	# itemPositionChanged = pyqtSignal(QPointF);
+	# itemScaleChanged = pyqtSignal(QPointF);
 
 	def __init__(self, renderScene):
 		super(MainManager, self).__init__();
@@ -100,8 +105,8 @@ class MainManager(QObject):
 						#I do this 'cause Qt just doesn't allow me to disable the automatic redo() when pushing
 
 	def handleScaleCommand(self, scaleDelta):
-		scaleCmd = ScaleCommand(self.renderScene.selectedItems(), scaleDelta)
-		self.undoStack.push(scaleCmd)
+		scaleCmd = ScaleCommand(self.renderScene.selectedItems(), scaleDelta);
+		self.undoStack.push(scaleCmd);
 		scaleCmd.undo();
 
 	def loadFromPBE(self, PBEFile):
