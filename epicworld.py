@@ -23,7 +23,7 @@ class MainWindow(QMainWindow):
         self.mainManager = MainManager(self.scene)
         self.listManager = BodyListManager(self.ui.bodyList)
         rect = self.mainManager.axes.childrenBoundingRect();
-        print(rect.x(), rect.y(), rect.width(), rect.height())
+        #print(rect.x(), rect.y(), rect.width(), rect.height())
         self.ui.mainCanvas.setSceneRect(self.mainManager.axes.childrenBoundingRect())
         self.connections();
         self.ui.mainCanvas.show();
