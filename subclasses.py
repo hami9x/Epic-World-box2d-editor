@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QGraphicsScene, QUndoCommand, QGraphicsItem
-from PyQt5.QtCore import QStringListModel, QMimeData, pyqtSignal, QPointF
+from PyQt5.QtCore import QStringListModel, QMimeData, pyqtSignal, QPointF, Qt
 from PyQt5.QtGui import QTransform
 import math
 
@@ -54,7 +54,7 @@ class MainAreaGraphicsScene(QGraphicsScene):
         super(MainAreaGraphicsScene, self).mousePressEvent(mouseEvent)
 
     def mouseMoveEvent(self, mouseEvent):
-        if self.state == SCALING:
+        if self.state == SCALING and (Qt.LeftButton == mouseEvent.buttons()):
             screenRoot = QPointF(0, 0)
             if self.origDist == -1:
                 origMousePos = mouseEvent.screenPos();
