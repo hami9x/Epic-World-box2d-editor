@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'epicworld.ui'
 #
-# Created: Thu Nov 21 21:48:29 2013
+# Created: Fri Nov 22 08:15:49 2013
 #      by: PyQt5 UI code generator 5.0.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -70,15 +70,23 @@ class Ui_MainWindow(object):
         self.actionScale = QtWidgets.QAction(MainWindow)
         self.actionScale.setCheckable(True)
         self.actionScale.setObjectName("actionScale")
+        self.actionUndo = QtWidgets.QAction(MainWindow)
+        self.actionUndo.setObjectName("actionUndo")
+        self.actionRedo = QtWidgets.QAction(MainWindow)
+        self.actionRedo.setObjectName("actionRedo")
         self.menuFile.addAction(self.actionLoad)
         self.menuFile.addAction(self.actionSave)
         self.menuFile.addAction(self.actionImport_Bodies)
         self.menuAction.addAction(self.actionDelete_Body)
         self.menuAction.addAction(self.actionScale)
+        self.menuAction.addAction(self.actionUndo)
+        self.menuAction.addAction(self.actionRedo)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuAction.menuAction())
         self.toolBar.addAction(self.actionDelete_Body)
         self.toolBar.addAction(self.actionScale)
+        self.toolBar.addAction(self.actionUndo)
+        self.toolBar.addAction(self.actionRedo)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -91,10 +99,15 @@ class Ui_MainWindow(object):
         self.toolBar.setWindowTitle(_translate("MainWindow", "toolBar"))
         self.actionLoad.setText(_translate("MainWindow", "Load"))
         self.actionSave.setText(_translate("MainWindow", "Save"))
+        self.actionSave.setShortcut(_translate("MainWindow", "Ctrl+S"))
         self.actionImport_Bodies.setText(_translate("MainWindow", "Import Bodies"))
         self.actionImport_Bodies.setShortcut(_translate("MainWindow", "Ctrl+I"))
         self.actionDelete_Body.setText(_translate("MainWindow", "Delete"))
         self.actionDelete_Body.setShortcut(_translate("MainWindow", "Del"))
         self.actionScale.setText(_translate("MainWindow", "Scale"))
         self.actionScale.setShortcut(_translate("MainWindow", "Space"))
+        self.actionUndo.setText(_translate("MainWindow", "Undo"))
+        self.actionUndo.setShortcut(_translate("MainWindow", "Ctrl+Z"))
+        self.actionRedo.setText(_translate("MainWindow", "Redo"))
+        self.actionRedo.setShortcut(_translate("MainWindow", "Ctrl+Y"))
 

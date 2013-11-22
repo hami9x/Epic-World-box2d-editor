@@ -2,14 +2,15 @@ import json
 import math
 import os
 from PyQt5.QtWidgets import QFileDialog, QGraphicsRectItem, QGraphicsPolygonItem, QGraphicsEllipseItem, \
-QGraphicsLineItem, QGraphicsPixmapItem, QGraphicsItemGroup, QGraphicsItem, QAbstractItemView
+QGraphicsLineItem, QGraphicsPixmapItem, QGraphicsItemGroup, QGraphicsItem, QAbstractItemView, QUndoStack
 from PyQt5.QtGui import QPen, QVector2D, QPolygonF, QBrush, QPixmap, QColor
 from PyQt5.QtCore import Qt, QPointF, QRectF, pyqtSignal, QObject
-from subclasses import BodyListModel
+from subclasses import BodyListModel, MoveCommand, DeleteCommand, ScaleCommand
 
 class BodyItem(QGraphicsRectItem):
 	def __init__(self, itemId, bodyspecName, margin):
 		super(BodyItem, self).__init__(0, 0, 0, 0);
+		self.deleted = False;
 		self.itemId = itemId;
 		self.bodyspecName = bodyspecName;
 		self.margin = margin;
@@ -23,6 +24,10 @@ class BodyItem(QGraphicsRectItem):
 		margin = self.margin / self.scale();
 		rect = self.childrenBoundingRect()
 		self.setRect(QRectF(rect.x()-margin, rect.y()-margin, rect.width()+2*margin, rect.height()+2*margin));
+
+	def setDeleted(self, deleted):
+		self.setVisible(not deleted);
+		self.deleted = deleted;
 
 class GridItem(QGraphicsItemGroup):
 	def __init__(self, origX, origY, perCell, n):
@@ -64,6 +69,8 @@ class MainManager(QObject):
 		self.bodies = {};
 		self.bodyInstances = [];
 		self.nameIndex = {};
+
+		#Draw the axes
 		self.axes = QGraphicsItemGroup();
 		renderScene.addItem(self.axes);
 		xAxis = QGraphicsItemGroup(self.axes);
@@ -79,7 +86,23 @@ class MainManager(QObject):
 		QGraphicsLineItem(x2+s2, -(y2-s1), x2, -y2, yAxis);
 		grid = GridItem(0, 0, self.UNITS_PER_METER, 100);
 		renderScene.addItem(grid);
-		#print(rect.x(), rect.y(), rect.width(), rect.height())
+		
+		self.undoStack = QUndoStack(self);
+
+	def deleteSelected(self):
+		delCmd = DeleteCommand(self.renderScene.selectedItems())
+		self.undoStack.push(delCmd);
+
+	def handleMoveCommand(self, pos1, pos2):
+		moveCmd = MoveCommand(self.renderScene.selectedItems(), pos1, pos2)
+		self.undoStack.push(moveCmd)
+		moveCmd.undo() #The default event implementation moved the object already, another move is wrong
+						#I do this 'cause Qt just doesn't allow me to disable the automatic redo() when pushing
+
+	def handleScaleCommand(self, scaleDelta):
+		scaleCmd = ScaleCommand(self.renderScene.selectedItems(), scaleDelta)
+		self.undoStack.push(scaleCmd)
+		scaleCmd.undo();
 
 	def loadFromPBE(self, PBEFile):
 		with open(PBEFile, "r") as f:
@@ -161,6 +184,7 @@ class MainManager(QObject):
 
 	def loadFile(self, file):
 		with open(file, "r") as f:
+			self.renderScene.clearInstancesOf(BodyItem);
 			data = json.load(f);			
 			self.bodies = data["spec"];
 			for name, body in self.bodies.items():

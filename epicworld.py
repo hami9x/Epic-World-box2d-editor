@@ -35,7 +35,15 @@ class MainWindow(QMainWindow):
         self.ui.actionSave.triggered.connect(self.save);
         self.scene.receivedBodyDrop.connect(self.mainManager.cloneBody);
         self.ui.actionScale.toggled.connect(self.scene.scaleModeToggled);
-        self.scene.wantsToStopScaling.connect(self.ui.actionScale.toggle)
+        self.ui.actionDelete_Body.triggered.connect(self.mainManager.deleteSelected)
+        self.ui.actionUndo.triggered.connect(self.mainManager.undoStack.undo);
+        self.ui.actionRedo.triggered.connect(self.mainManager.undoStack.redo);
+        self.scene.mouseIsMovingItems.connect(self.mainManager.handleMoveCommand);
+        self.scene.scalingStopped.connect(self.mainManager.handleScaleCommand);
+        self.scene.mouseClickEndedScaling.connect(self.turnOffScale);
+
+    def turnOffScale(self):
+        self.ui.actionScale.setChecked(False);
 
     def save(self):
         if not self.file:

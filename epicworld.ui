@@ -46,6 +46,8 @@
     </property>
     <addaction name="actionDelete_Body"/>
     <addaction name="actionScale"/>
+    <addaction name="actionUndo"/>
+    <addaction name="actionRedo"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuAction"/>
@@ -88,6 +90,8 @@
    </attribute>
    <addaction name="actionDelete_Body"/>
    <addaction name="actionScale"/>
+   <addaction name="actionUndo"/>
+   <addaction name="actionRedo"/>
   </widget>
   <action name="actionLoad">
    <property name="text">
@@ -97,6 +101,9 @@
   <action name="actionSave">
    <property name="text">
     <string>Save</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
    </property>
   </action>
   <action name="actionImport_Bodies">
@@ -130,6 +137,22 @@
    </property>
    <property name="shortcut">
     <string>Space</string>
+   </property>
+  </action>
+  <action name="actionUndo">
+   <property name="text">
+    <string>Undo</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
+   </property>
+  </action>
+  <action name="actionRedo">
+   <property name="text">
+    <string>Redo</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Y</string>
    </property>
   </action>
  </widget>
