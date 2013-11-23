@@ -58,16 +58,23 @@ class MainWindow(QMainWindow):
         return self.scene.selectedItems()[0];
 
     def itemUpdateX(self, newVal):
+        print(newVal);
         item = self.theOnlySelectedItem();
         if not item: return;
-        x = int(newVal);
-        item.setPos(QPointF(x, item.pos().y()))
+        try:
+            x = int(newVal);
+        except ValueError:
+            return;
+        item.setPosXByMeter(x)
 
     def itemUpdateY(self, newVal):
         item = self.theOnlySelectedItem();
         if not item: return;
-        y = int(newVal);
-        item.setPos(QPointF(item.pos().x(), y))
+        try:
+            y = int(newVal);
+        except ValueError:
+            return;
+        item.setPosYByMeter(y);
 
     def itemUpdateScale(self, newVal):
         item = self.theOnlySelectedItem();
@@ -83,8 +90,8 @@ class MainWindow(QMainWindow):
     def updateItemProperties(self):
         item = self.theOnlySelectedItem();
         if not item: return;
-        self.ui.xEdit.setText(str(item.pos().x()));
-        self.ui.yEdit.setText(str(item.pos().y()));
+        self.ui.xEdit.setText(str(item.meterPos().x()));
+        self.ui.yEdit.setText(str(item.meterPos().y()));
         self.ui.scaleEdit.setText(str(item.scale()));
         self.ui.idEdit.setText(item.itemId);
 

@@ -13,12 +13,22 @@ class BodyItem(QGraphicsRectItem):
 		self.deleted = False;
 		self.itemId = itemId;
 		self.bodyspecName = bodyspecName;
-		self.margin = margin;
+		self.margin = 0;
 		pen = QPen(Qt.SolidLine);
 		pen.setColor(QColor(230, 230, 230))
 		pen.setWidth(0);
 		self.setPen(pen);
 		self.setFlags(QGraphicsItem.ItemIsSelectable | QGraphicsItem.ItemIsMovable);
+
+	def meterPos(self):
+		return QPointF(self.pos().x()/MainManager.UNITS_PER_METER, self.pos().y()/MainManager.UNITS_PER_METER);
+
+	def setPosXByMeter(self, x):
+		print(x);
+		self.setPos(QPointF(x*MainManager.UNITS_PER_METER, self.pos().y()));
+
+	def setPosYByMeter(self, y):
+		self.setPos(QPointF(self.pos().x(), y*MainManager.UNITS_PER_METER));
 
 	def updateBorder(self):
 		margin = self.margin / self.scale();
