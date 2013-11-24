@@ -24,7 +24,6 @@ class BodyItem(QGraphicsRectItem):
 		return QPointF(self.pos().x()/MainManager.UNITS_PER_METER, self.pos().y()/MainManager.UNITS_PER_METER);
 
 	def setPosXByMeter(self, x):
-		print(x);
 		self.setPos(QPointF(x*MainManager.UNITS_PER_METER, self.pos().y()));
 
 	def setPosYByMeter(self, y):

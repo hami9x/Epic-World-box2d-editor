@@ -8,7 +8,7 @@ Essential functionalities completed, including import/export, moving, scaling, u
 Binary distribution of version 1.0 alpha for Windows can be downloaded [here](http://ubuntuone.com/0WImWYvLHfXr3v0ArzmrtP).  
 For linux, running the code is very easy, just install PyQt5 (package `python3-pyqt5` on Ubuntu) and run `python3 epicworld.py`.  
   
-Licese  
+License  
 -------
  Copyright  © 2013 Hai Thanh Nguyen
 
