@@ -100,8 +100,17 @@ class MainManager(QObject):
 		QGraphicsLineItem(x2+s2, -(y2-s1), x2, -y2, yAxis);
 		grid = GridItem(0, 0, self.UNITS_PER_METER, 100);
 		renderScene.addItem(grid);
-		
+		for o in [self.axes, grid]:
+			o.setZValue(-1000);		
 		self.undoStack = QUndoStack(self);
+
+	def raiseItems(self):
+		for item in self.renderScene.selectedItems():
+			item.setZValue(item.zValue() + 0.001);
+
+	def lowerItems(self):
+		for item in self.renderScene.selectedItems():
+			item.setZValue(item.zValue() - 0.001);
 
 	def deleteSelected(self):
 		delCmd = DeleteCommand(self.renderScene.selectedItems())
@@ -158,6 +167,7 @@ class MainManager(QObject):
 		body.setPos(dropPos);
 		group = QGraphicsItemGroup(body);
 		self.renderScene.addItem(body);
+		width = self.DEFAULT_BODY_SIZE*scale;
 
 		for shape in bodyDef["shapes"]:
 			vertices = shape["vertices"];
@@ -175,14 +185,13 @@ class MainManager(QObject):
 		imagePath = None;
 		if (bodyDef["image"]):
 			imagePath = bodyDef["image"];
-			pm = QGraphicsPixmapItem(QPixmap(imagePath).scaledToWidth(self.DEFAULT_BODY_SIZE), body);
+			pm = QGraphicsPixmapItem(QPixmap(imagePath).scaledToWidth(width), body);
 			pm.setFlags(QGraphicsItem.ItemStacksBehindParent);
 			pm.setOffset(0, -pm.boundingRect().height());
-			group.setScale(self.DEFAULT_BODY_SIZE/self.TRANSCOORD_X);
+			group.setScale(width/self.TRANSCOORD_X);
 		else:
-			group.setScale(self.DEFAULT_BODY_SIZE/bounding.width());
+			group.setScale(width/bounding.width());
 		body.updateBorder();
-		body.setScale(scale);
 
 	def save(self, file):
 		with open(file, "w") as f:

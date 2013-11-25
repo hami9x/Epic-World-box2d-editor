@@ -49,6 +49,8 @@
     <addaction name="actionScale"/>
     <addaction name="actionUndo"/>
     <addaction name="actionRedo"/>
+    <addaction name="actionRaise"/>
+    <addaction name="actionLower"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuAction"/>
@@ -102,6 +104,8 @@
    <addaction name="actionScale"/>
    <addaction name="actionUndo"/>
    <addaction name="actionRedo"/>
+   <addaction name="actionRaise"/>
+   <addaction name="actionLower"/>
   </widget>
   <widget class="QDockWidget" name="propertiesDock">
    <property name="enabled">
@@ -297,6 +301,22 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+S</string>
+   </property>
+  </action>
+  <action name="actionRaise">
+   <property name="text">
+    <string>Raise</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+.</string>
+   </property>
+  </action>
+  <action name="actionLower">
+   <property name="text">
+    <string>Lower</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+,</string>
    </property>
   </action>
  </widget>

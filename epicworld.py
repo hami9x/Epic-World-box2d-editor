@@ -1,4 +1,4 @@
-from PyQt5.QtCore import pyqtSlot, Qt, QTimer
+from PyQt5.QtCore import pyqtSlot, Qt, QTimer, QRectF
 from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow, QGraphicsView, QFileDialog
 from PyQt5.QtGui import QPainter
 
@@ -25,8 +25,9 @@ class MainWindow(QMainWindow):
         self.mainManager = MainManager(self.scene)
         self.listManager = BodyListManager(self.ui.bodyList)
         rect = self.mainManager.axes.childrenBoundingRect();
-        #print(rect.x(), rect.y(), rect.width(), rect.height())
+        # print(rect.x(), rect.y(), rect.width(), rect.height())
         self.ui.mainCanvas.setSceneRect(self.mainManager.axes.childrenBoundingRect())
+        # self.ui.mainCanvas.setSceneRect(QRectF(-5000, -5000, 10000, 10000));
         self.connections();
         self.ui.mainCanvas.show();
 
@@ -51,6 +52,8 @@ class MainWindow(QMainWindow):
         self.ui.yEdit.textEdited.connect(self.itemUpdateY);
         self.ui.scaleEdit.textEdited.connect(self.itemUpdateScale);
         self.ui.idEdit.textEdited.connect(self.itemUpdateId);
+        self.ui.actionRaise.triggered.connect(self.mainManager.raiseItems);
+        self.ui.actionLower.triggered.connect(self.mainManager.lowerItems);
 
     def theOnlySelectedItem(self):
         if not self.scene.onlyOneItemSelected():

@@ -1,5 +1,5 @@
-from PyQt5.QtWidgets import QGraphicsScene, QUndoCommand, QGraphicsItem
-from PyQt5.QtCore import QStringListModel, QMimeData, pyqtSignal, QPointF, Qt
+from PyQt5.QtWidgets import QGraphicsScene, QUndoCommand, QGraphicsItem, QGraphicsView
+from PyQt5.QtCore import QStringListModel, QMimeData, pyqtSignal, QPointF, Qt, QRectF
 from PyQt5.QtGui import QTransform
 import math
 
@@ -20,6 +20,7 @@ class MainAreaGraphicsScene(QGraphicsScene):
         super(MainAreaGraphicsScene, self).__init__(parent);
         self.view = view;
         self.state = NORMAL
+        self.panning = False;
 
     def clearInstancesOf(self, cls):
         for item in self.items():
@@ -48,6 +49,17 @@ class MainAreaGraphicsScene(QGraphicsScene):
         self.receivedBodyDrop.emit(event.mimeData().text(), event.scenePos());
 
     def mousePressEvent(self, mouseEvent):
+        if Qt.ControlModifier == mouseEvent.modifiers():
+            self.panning = True;
+            self.view.setDragMode(QGraphicsView.ScrollHandDrag);
+            item = self.itemAt(mouseEvent.scenePos(), QTransform());
+            self.itemUnderMouse = item;
+            if item:
+                item.setFlag(QGraphicsItem.ItemIsMovable, False);
+                if not item.isSelected():
+                    item.setFlag(QGraphicsItem.ItemIsSelectable, False);
+            return;
+            # self.view.setInteractive(False);
         if self.onlyOneItemSelected():
                 self.itemChanging.emit(True);
         if self.state == SCALING:
@@ -74,6 +86,15 @@ class MainAreaGraphicsScene(QGraphicsScene):
         super(MainAreaGraphicsScene, self).mouseMoveEvent(mouseEvent)
 
     def mouseReleaseEvent(self, mouseEvent):
+        if self.panning:
+            self.view.setDragMode(QGraphicsView.RubberBandDrag);
+            item = self.itemUnderMouse;
+            if item:
+                item.setFlag(QGraphicsItem.ItemIsMovable, True);
+                item.setFlag(QGraphicsItem.ItemIsSelectable, True);
+            self.panning = False;
+            return;
+        # self.view.setInteractive(True);
         if self.state == SCALING:
             # self.scalingStopped.emit(self.scaleDelta);
             self.mouseClickEndedScaling.emit(False);
@@ -89,10 +110,14 @@ class MainAreaGraphicsScene(QGraphicsScene):
             self.itemChanging.emit(False);
 
     def wheelEvent(self, event):
+        self.view.setTransformationAnchor(QGraphicsView.AnchorUnderMouse);
         event.accept();
         sx = 1 + event.delta()/(180*8);
-        self.view.centerOn(event.scenePos());
         self.view.scale(sx, sx);
+        self.view.setSceneRect(QRectF());
+
+        # if sx>1: self.view.centerOn(event.scenePos());
+
 
     def onlyOneItemSelected(self):
         return (len(self.selectedItems()) == 1);

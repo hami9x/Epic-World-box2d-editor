@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'epicworld.ui'
 #
-# Created: Sat Nov 23 12:56:20 2013
+# Created: Mon Nov 25 20:39:10 2013
 #      by: PyQt5 UI code generator 5.0.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -153,6 +153,10 @@ class Ui_MainWindow(object):
         self.actionRedo.setObjectName("actionRedo")
         self.actionSave_as = QtWidgets.QAction(MainWindow)
         self.actionSave_as.setObjectName("actionSave_as")
+        self.actionRaise = QtWidgets.QAction(MainWindow)
+        self.actionRaise.setObjectName("actionRaise")
+        self.actionLower = QtWidgets.QAction(MainWindow)
+        self.actionLower.setObjectName("actionLower")
         self.menuFile.addAction(self.actionLoad)
         self.menuFile.addAction(self.actionSave)
         self.menuFile.addAction(self.actionSave_as)
@@ -161,12 +165,16 @@ class Ui_MainWindow(object):
         self.menuAction.addAction(self.actionScale)
         self.menuAction.addAction(self.actionUndo)
         self.menuAction.addAction(self.actionRedo)
+        self.menuAction.addAction(self.actionRaise)
+        self.menuAction.addAction(self.actionLower)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuAction.menuAction())
         self.toolBar.addAction(self.actionDelete_Body)
         self.toolBar.addAction(self.actionScale)
         self.toolBar.addAction(self.actionUndo)
         self.toolBar.addAction(self.actionRedo)
+        self.toolBar.addAction(self.actionRaise)
+        self.toolBar.addAction(self.actionLower)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -197,4 +205,8 @@ class Ui_MainWindow(object):
         self.actionRedo.setShortcut(_translate("MainWindow", "Ctrl+Y"))
         self.actionSave_as.setText(_translate("MainWindow", "Save as..."))
         self.actionSave_as.setShortcut(_translate("MainWindow", "Ctrl+Shift+S"))
+        self.actionRaise.setText(_translate("MainWindow", "Raise"))
+        self.actionRaise.setShortcut(_translate("MainWindow", "Ctrl+."))
+        self.actionLower.setText(_translate("MainWindow", "Lower"))
+        self.actionLower.setShortcut(_translate("MainWindow", "Ctrl+,"))
 
