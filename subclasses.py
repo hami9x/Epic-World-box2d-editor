@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QGraphicsScene, QUndoCommand, QGraphicsItem, QGraphicsView
+from PyQt5.QtWidgets import QGraphicsScene, QUndoCommand, QGraphicsItem, QGraphicsView, QListView
 from PyQt5.QtCore import QStringListModel, QMimeData, pyqtSignal, QPointF, Qt, QRectF
 from PyQt5.QtGui import QTransform
 import math
@@ -27,12 +27,9 @@ class MainAreaGraphicsScene(QGraphicsScene):
             if isinstance(item, cls):
                 self.removeItem(item);
 
-    def scaleModeToggled(self, checked):
-        self.state = SCALING if checked else NORMAL;
-        self.view.setMouseTracking(checked);
+    def scaleStarted(self):
+        self.state = SCALING;
         self.origDist = -1;
-        if not checked:
-            self.scalingStopped.emit(self.scaleDelta);
 
     def dragMoveEvent(self, event):
         event.accept();
@@ -44,9 +41,9 @@ class MainAreaGraphicsScene(QGraphicsScene):
         event.acceptProposedAction();
 
     def dropEvent(self, event):
-        #print("Yay!");
         #print(event.mimeData().text());
-        self.receivedBodyDrop.emit(event.mimeData().text(), event.scenePos());
+        if isinstance(event.source(), QListView):
+            self.receivedBodyDrop.emit(event.mimeData().text(), event.scenePos());
 
     def mousePressEvent(self, mouseEvent):
         if Qt.ControlModifier == mouseEvent.modifiers():
@@ -81,6 +78,7 @@ class MainAreaGraphicsScene(QGraphicsScene):
             if threshold<-1: threshold = -0.9999
             items = self.selectedItems();
             for idx, item in enumerate(items):
+                item.prepareGeometryChange();
                 item.setScale(self.origScale[idx]*(1+threshold))
             self.scaleDelta = (1+threshold);
         super(MainAreaGraphicsScene, self).mouseMoveEvent(mouseEvent)
@@ -96,8 +94,9 @@ class MainAreaGraphicsScene(QGraphicsScene):
             return;
         # self.view.setInteractive(True);
         if self.state == SCALING:
-            # self.scalingStopped.emit(self.scaleDelta);
-            self.mouseClickEndedScaling.emit(False);
+            self.scalingStopped.emit(self.scaleDelta);
+            self.state = NORMAL;
+            self.origDist = -1;
         if self.state == NORMAL:
             pos = mouseEvent.scenePos();
             item = self.itemAt(pos, QTransform());
@@ -157,10 +156,12 @@ class ScaleCommand(QUndoCommand):
     def undo(self):
         for item in self.items:
             item.setScale(item.scale()/self.scaleDelta)
+            item.updateImg();
 
     def redo(self):
         for item in self.items:
             item.setScale(item.scale()*self.scaleDelta)
+            item.updateImg();
 
 class DeleteCommand(QUndoCommand):
     def __init__(self, items):

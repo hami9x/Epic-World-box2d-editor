@@ -37,23 +37,23 @@ class MainWindow(QMainWindow):
         self.mainManager.bodiesLoaded.connect(self.listManager.updateList);
         self.ui.actionSave.triggered.connect(self.save);
         self.scene.receivedBodyDrop.connect(self.mainManager.cloneBody);
-        self.ui.actionScale.toggled.connect(self.scene.scaleModeToggled);
+        self.ui.actionScale.triggered.connect(self.scene.scaleStarted);
         self.ui.actionDelete_Body.triggered.connect(self.mainManager.deleteSelected)
         self.ui.actionUndo.triggered.connect(self.mainManager.undoStack.undo);
         self.ui.actionRedo.triggered.connect(self.mainManager.undoStack.redo);
         self.scene.mouseIsMovingItems.connect(self.mainManager.handleMoveCommand);
         self.scene.scalingStopped.connect(self.mainManager.handleScaleCommand);
-        self.scene.mouseClickEndedScaling.connect(self.turnOffScale);
         self.ui.actionSave_as.triggered.connect(self.saveAs);
         self.scene.itemChanging.connect(self.startStopUpdatingProperties);
         self.scene.selectionChanged.connect(self.enableDisableProperties);
         self.updateTimer.timeout.connect(self.updateItemProperties);
         self.ui.xEdit.textEdited.connect(self.itemUpdateX);
         self.ui.yEdit.textEdited.connect(self.itemUpdateY);
-        self.ui.scaleEdit.textEdited.connect(self.itemUpdateScale);
+        self.ui.widthEdit.textEdited.connect(self.itemUpdateWidth);
         self.ui.idEdit.textEdited.connect(self.itemUpdateId);
         self.ui.actionRaise.triggered.connect(self.mainManager.raiseItems);
         self.ui.actionLower.triggered.connect(self.mainManager.lowerItems);
+        self.ui.actionDuplicate.triggered.connect(self.mainManager.duplicateItems);
 
     def theOnlySelectedItem(self):
         if not self.scene.onlyOneItemSelected():
@@ -79,11 +79,14 @@ class MainWindow(QMainWindow):
             return;
         item.setPosYByMeter(y);
 
-    def itemUpdateScale(self, newVal):
+    def itemUpdateWidth(self, newVal):
         item = self.theOnlySelectedItem();
         if not item: return;
-        scale = int(newVal);
-        item.setScale(scale);
+        try:
+            width = int(newVal);
+            item.setScale(item.scale()*width/item.getMeterWidth());
+        except ValueError:
+            return;
 
     def itemUpdateId(self, newId):
         item = self.theOnlySelectedItem();
@@ -95,7 +98,7 @@ class MainWindow(QMainWindow):
         if not item: return;
         self.ui.xEdit.setText(str(item.meterPos().x()));
         self.ui.yEdit.setText(str(item.meterPos().y()));
-        self.ui.scaleEdit.setText(str(item.scale()));
+        self.ui.widthEdit.setText(str(item.getMeterWidth()));
         self.ui.idEdit.setText(item.itemId);
 
     def enableDisableProperties(self):
@@ -112,10 +115,6 @@ class MainWindow(QMainWindow):
         if changing:
             self.updateItemProperties();
             self.updateTimer.start();
-
-
-    def turnOffScale(self):
-        self.ui.actionScale.setChecked(False);
 
     def saveAs(self):
         if not self.file:

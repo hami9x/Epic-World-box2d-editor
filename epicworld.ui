@@ -51,6 +51,7 @@
     <addaction name="actionRedo"/>
     <addaction name="actionRaise"/>
     <addaction name="actionLower"/>
+    <addaction name="actionDuplicate"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuAction"/>
@@ -106,6 +107,7 @@
    <addaction name="actionRedo"/>
    <addaction name="actionRaise"/>
    <addaction name="actionLower"/>
+   <addaction name="actionDuplicate"/>
   </widget>
   <widget class="QDockWidget" name="propertiesDock">
    <property name="enabled">
@@ -154,7 +156,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QGroupBox" name="scaleGroup">
+      <widget class="QGroupBox" name="widthGroup">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
          <horstretch>0</horstretch>
@@ -162,11 +164,11 @@
         </sizepolicy>
        </property>
        <property name="title">
-        <string>Scale</string>
+        <string>Width</string>
        </property>
        <layout class="QHBoxLayout" name="horizontalLayout_5">
         <item>
-         <widget class="QLineEdit" name="scaleEdit">
+         <widget class="QLineEdit" name="widthEdit">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
             <horstretch>0</horstretch>
@@ -270,7 +272,7 @@
   </action>
   <action name="actionScale">
    <property name="checkable">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="text">
     <string>Scale</string>
@@ -317,6 +319,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+,</string>
+   </property>
+  </action>
+  <action name="actionDuplicate">
+   <property name="text">
+    <string>Duplicate</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+D</string>
    </property>
   </action>
  </widget>

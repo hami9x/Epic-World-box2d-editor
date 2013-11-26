@@ -19,6 +19,8 @@ class BodyItem(QGraphicsRectItem):
 		pen.setWidth(0);
 		self.setPen(pen);
 		self.setFlags(QGraphicsItem.ItemIsSelectable | QGraphicsItem.ItemIsMovable);
+		self.pixmap = None;
+		self.img = None;
 
 	def meterPos(self):
 		return QPointF(self.pos().x()/MainManager.UNITS_PER_METER, self.pos().y()/MainManager.UNITS_PER_METER);
@@ -38,8 +40,33 @@ class BodyItem(QGraphicsRectItem):
 		self.setVisible(not deleted);
 		self.deleted = deleted;
 
+	def getMeterWidth(self):
+		return self.getWidth() / MainManager.UNITS_PER_METER;
+
+	def getWidth(self):
+		return self.childrenBoundingRect().width() * self.scale();
+
 	def setId(self, itemId):
 		self.itemId = itemId;
+
+	def setPixmap(self, pixmap):
+		self.pixmap = pixmap;
+
+	def setImg(self, item):
+		self.img = item;
+
+	def updateImg(self, width=0):
+		if not self.pixmap or not self.img:
+			return;
+		width = width or self.getWidth();
+		self.img.setParentItem(None);
+		self.scene().removeItem(self.img);
+		self.img = QGraphicsPixmapItem(self.pixmap.scaledToWidth(width));
+		self.img.setFlags(QGraphicsItem.ItemStacksBehindParent);
+		self.img.setOffset(0, -self.img.boundingRect().height());
+		self.img.setParentItem(self);
+		self.img.setScale(1/self.scale());
+		self.update();
 
 class GridItem(QGraphicsItemGroup):
 	def __init__(self, origX, origY, perCell, n):
@@ -155,7 +182,14 @@ class MainManager(QObject):
 							);
 		self.bodies[bodyDef["name"]] = bodyConf;
 
-	def cloneBody(self, bodyspecName, dropPos, itemId=None, scale=1):
+	def duplicateItems(self):
+		for item in self.renderScene.selectedItems():
+			newItem = self.cloneBody(item.bodyspecName, item.pos(),
+				width=item.getMeterWidth());
+			item.setSelected(False);
+			newItem.setSelected(True);
+
+	def cloneBody(self, bodyspecName, dropPos, itemId=None, width=0):
 		bodyDef = self.bodies[bodyspecName];
 		if not itemId:
 			if bodyspecName not in self.nameIndex:
@@ -167,7 +201,7 @@ class MainManager(QObject):
 		body.setPos(dropPos);
 		group = QGraphicsItemGroup(body);
 		self.renderScene.addItem(body);
-		width = self.DEFAULT_BODY_SIZE*scale;
+		width = width*self.UNITS_PER_METER or self.DEFAULT_BODY_SIZE;
 
 		for shape in bodyDef["shapes"]:
 			vertices = shape["vertices"];
@@ -185,13 +219,17 @@ class MainManager(QObject):
 		imagePath = None;
 		if (bodyDef["image"]):
 			imagePath = bodyDef["image"];
-			pm = QGraphicsPixmapItem(QPixmap(imagePath).scaledToWidth(width), body);
+			pixmap = QPixmap(imagePath);
+			body.setPixmap(pixmap);
+			pm = QGraphicsPixmapItem(pixmap.scaledToWidth(width), body);
+			body.setImg(pm);
 			pm.setFlags(QGraphicsItem.ItemStacksBehindParent);
 			pm.setOffset(0, -pm.boundingRect().height());
 			group.setScale(width/self.TRANSCOORD_X);
 		else:
 			group.setScale(width/bounding.width());
 		body.updateBorder();
+		return body;
 
 	def save(self, file):
 		with open(file, "w") as f:
@@ -200,14 +238,15 @@ class MainManager(QObject):
 				pos = inst.scenePos();
 				instancesDef.append({"id": inst.itemId, "bodyspec": inst.bodyspecName,
 					"pos": {"x": pos.x()/self.UNITS_PER_METER, "y": pos.y()/self.UNITS_PER_METER},
-					"scale": inst.scale()
+					"width": inst.getMeterWidth()
 					});
-			output = {"spec": self.bodies, "instances": instancesDef};
+			output = {"spec": self.bodies, "instances": instancesDef, "nameIndex": self.nameIndex};
 			json.dump(output, f, cls=MyJsonEncoder);
 
 	def loadFile(self, file):
 		with open(file, "r") as f:
 			self.renderScene.clearInstancesOf(BodyItem);
+			self.bodyInstances = [];
 			data = json.load(f);			
 			self.bodies = data["spec"];
 			for name, body in self.bodies.items():
@@ -221,8 +260,9 @@ class MainManager(QObject):
 			for inst in data["instances"]:
 				pos = inst["pos"];
 				self.cloneBody(inst["bodyspec"], QPointF(pos["x"]*self.UNITS_PER_METER, pos["y"]*self.UNITS_PER_METER),
-					itemId=inst["id"], scale=inst["scale"])
+					itemId=inst["id"], width=inst["width"])
 			self.bodiesLoaded.emit(self.bodies);
+			self.nameIndex = data["nameIndex"];
 			
 
 
