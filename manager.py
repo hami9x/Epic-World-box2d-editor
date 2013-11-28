@@ -63,7 +63,7 @@ class BodyItem(QGraphicsRectItem):
 		self.scene().removeItem(self.img);
 		self.img = QGraphicsPixmapItem(self.pixmap.scaledToWidth(width));
 		self.img.setFlags(QGraphicsItem.ItemStacksBehindParent);
-		self.img.setOffset(0, -self.img.boundingRect().height());
+		# self.img.setOffset(0, -self.img.boundingRect().height());
 		self.img.setParentItem(self);
 		self.img.setScale(1/self.scale());
 		self.update();
@@ -217,6 +217,7 @@ class MainManager(QObject):
 			newItem.setParentItem(group);
 		bounding = group.childrenBoundingRect();
 		imagePath = None;
+		height = 0;
 		if (bodyDef["image"]):
 			imagePath = bodyDef["image"];
 			pixmap = QPixmap(imagePath);
@@ -226,15 +227,21 @@ class MainManager(QObject):
 			pm.setFlags(QGraphicsItem.ItemStacksBehindParent);
 			pm.setOffset(0, -pm.boundingRect().height());
 			group.setScale(width/self.TRANSCOORD_X);
+			height = pm.boundingRect().height();
 		else:
 			group.setScale(width/bounding.width());
+			height = bounding.height();
+		for item in body.childItems():
+			item.setPos(item.pos().x(), item.pos().y() + height)
 		body.updateBorder();
+
 		return body;
 
 	def save(self, file):
 		with open(file, "w") as f:
 			instancesDef = [];
 			for inst in self.bodyInstances:
+				if inst.deleted: continue;
 				pos = inst.scenePos();
 				instancesDef.append({"id": inst.itemId, "bodyspec": inst.bodyspecName,
 					"pos": {"x": pos.x()/self.UNITS_PER_METER, "y": pos.y()/self.UNITS_PER_METER},
