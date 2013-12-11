@@ -46,6 +46,12 @@ class BodyItem(QGraphicsRectItem):
 	def getWidth(self):
 		return self.childrenBoundingRect().width() * self.scale();
 
+	def getMeterHeight(self):
+		return self.getHeight() / MainManager.UNITS_PER_METER;
+
+	def getHeight(self):
+		return self.childrenBoundingRect().height() * self.scale();
+
 	def setId(self, itemId):
 		self.itemId = itemId;
 
@@ -245,7 +251,7 @@ class MainManager(QObject):
 				pos = inst.scenePos();
 				instancesDef.append({"id": inst.itemId, "bodyspec": inst.bodyspecName,
 					"pos": {"x": pos.x()/self.UNITS_PER_METER, "y": pos.y()/self.UNITS_PER_METER},
-					"width": inst.getMeterWidth()
+					"width": inst.getMeterWidth(), "height": inst.getMeterHeight()
 					});
 			output = {"spec": self.bodies, "instances": instancesDef, "nameIndex": self.nameIndex};
 			json.dump(output, f, cls=MyJsonEncoder);
