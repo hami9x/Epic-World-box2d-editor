@@ -5,8 +5,7 @@ We don't need to reinvent the feature to edit bodies, this tool is designed to b
   
 Essential functionalities completed, including import/export, moving, scaling, undo/redo. It's now ready to be used!  
 
-Binary distribution of version 1.0 alpha for Windows can be downloaded [here](http://ubuntuone.com/0WImWYvLHfXr3v0ArzmrtP).  
-For linux, running the code is very easy, just install PyQt5 (package `python3-pyqt5` on Ubuntu) and run `python3 epicworld.py`.  
+To download, check out the [home page](http://phaikawl.github.io/Epic-World-box2d-editor).
   
 License  
 -------
