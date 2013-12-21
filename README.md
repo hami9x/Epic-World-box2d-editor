@@ -6,6 +6,8 @@ We don't need to reinvent the feature to edit bodies, this tool is designed to b
 Essential functionalities completed, including import/export, moving, scaling, undo/redo. It's now ready to be used!  
 
 To download, check out the [home page](http://phaikawl.github.io/Epic-World-box2d-editor).
+
+This project is written in Python 3 and uses PyQt5.
   
 License  
 -------
